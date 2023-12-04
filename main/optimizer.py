@@ -206,7 +206,9 @@ class BaseOptimizer:
         self.smi_file = args.smi_file
         self.oracle = Oracle(args=self.args)
         if self.smi_file is not None:
-            self.all_smiles = self.load_smiles_from_file(self.smi_file)
+            # self.all_smiles = self.load_smiles_from_file(self.smi_file)
+            import pandas as pd
+            self.all_smiles = pd.read_csv(self.smi_file)['smiles']
         else:
             data = MolGen(name = 'ZINC')
             self.all_smiles = data.get_data()['smiles'].tolist()

@@ -73,6 +73,7 @@ class GB_GA_Optimizer(BaseOptimizer):
         population_smiles = starting_population
         population_mol = [Chem.MolFromSmiles(s) for s in population_smiles]
         population_scores = self.oracle([Chem.MolToSmiles(mol) for mol in population_mol])
+        print('Using a starting population of len: ', len(population_smiles))
 
         patience = 0
 
