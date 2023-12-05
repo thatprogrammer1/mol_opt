@@ -197,7 +197,6 @@ class Oracle:
 
 
 class BaseOptimizer:
-
     def __init__(self, args=None):
         self.model_name = "Default"
         self.args = args
@@ -208,7 +207,9 @@ class BaseOptimizer:
         if self.smi_file is not None:
             # self.all_smiles = self.load_smiles_from_file(self.smi_file)
             import pandas as pd
-            if self.smi_file.endswith('.csv'):
+            if type(self.smi_file) is list:
+                self.all_smiles = self.smi_file
+            elif self.smi_file.endswith('.csv'):
                 self.all_smiles = pd.read_csv(self.smi_file)['Model Response']
             else:
                 self.all_smiles = pd.read_csv(self.smi_file)['smiles']
@@ -339,11 +340,15 @@ class BaseOptimizer:
         random.seed(seed)
         self.seed = seed 
         self.oracle.task_label = self.model_name + "_" + oracle.name + "_" + str(seed)
-        self._optimize(oracle, config)
+        status = self._optimize(oracle, config)
+        if status == -1:
+            return None
         if self.args.log_results:
             self.log_result()
         self.save_result(self.model_name + "_" + oracle.name + "_" + str(seed))
+        buffer = self.mol_buffer.copy()
         self.reset()
+        return buffer
 
 
     def production(self, oracle, config, num_runs=5, project="production"):

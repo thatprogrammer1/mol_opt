@@ -71,11 +71,14 @@ class GB_GA_Optimizer(BaseOptimizer):
         # select initial population
         # population_smiles = heapq.nlargest(config["population_size"], starting_population, key=oracle)
         population_smiles = starting_population
+        assert len(starting_population) == 1, 'we are assuming we only start with 1 starting population'
         population_mol = [Chem.MolFromSmiles(s) for s in population_smiles]
-        print(f'There are {len([i for i in population_mol if i is None])} SMILES out of {len(population_mol)} that cannot be parsed')
+        # print(f'There are {len([i for i in population_mol if i is None])} SMILES out of {len(population_mol)} that cannot be parsed')
         population_mol = [i for i in population_mol if i is not None]
         population_scores = self.oracle([Chem.MolToSmiles(mol) for mol in population_mol])
-        print('Using a starting population of len: ', len(population_mol))
+        # print('Using a starting population of len: ', len(population_mol))
+        if len(population_mol) == 0:
+            return -1
 
         patience = 0
 
