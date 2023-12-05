@@ -127,9 +127,14 @@ def main():
     if args.task != "tune":
         assert len(args.oracles) == 1
         import pandas as pd
+        if args.csv.isnumeric():
+            pref = 'final_finetuning/results/'
+            l = os.listdir(pref)
+            args.csv = pref + l[int(args.csv)]
+        print('Using CSV: ', args.csv)
         df = pd.read_csv(args.csv)
         top_ks = []
-        num_k = 5
+        num_k = 10
         for row in df.iterrows():
             for oracle_name in args.oracles:
                 print(f'Optimizing oracle function: {oracle_name}')
